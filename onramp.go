@@ -16,8 +16,18 @@ type OnrampBody struct {
 	Address       string  `json:"address"`
 }
 
-func (fc *PretiumClient) Onramp(ctx context.Context, currencyCode string, input OnrampBody) (ExchangeRateResponse, error) {
-	onrampResp := ExchangeRateResponse{}
+type OnrampResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    struct {
+		TransactionCode string `json:"transaction_code"`
+		Status          string `json:"status"`
+		Message         string `json:"message"`
+	} `json:"data"`
+}
+
+func (fc *PretiumClient) Onramp(ctx context.Context, currencyCode string, input OnrampBody) (OnrampResponse, error) {
+	onrampResp := OnrampResponse{}
 
 	b, err := json.Marshal(&input)
 	if err != nil {

@@ -81,12 +81,21 @@ func parseResponse(resp *http.Response, target interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		b, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return err
+		var apiErr APIError
+		dec := json.NewDecoder(resp.Body)
+		if err := dec.Decode(&apiErr); err == nil && apiErr.Message != "" {
+			if apiErr.Code == 0 {
+				// Fallback to HTTP status code when API didn't set it.
+				apiErr.Code = resp.StatusCode
+			}
+			return &apiErr
 		}
 
-		return fmt.Errorf("Pretium server error: code=%s: response_body=%s", resp.Status, string(b))
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("Pretium server error: status=%s", resp.Status)
+		}
+		return fmt.Errorf("Pretium server error: status=%s body=%s", resp.Status, string(b))
 	}
 
 	return json.NewDecoder(resp.Body).Decode(target)

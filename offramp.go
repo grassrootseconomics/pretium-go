@@ -22,12 +22,57 @@ type (
 		MobileNetwork string `json:"mobile_network"`
 	}
 
+	ValidationResponse struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			Status        string `json:"status"`
+			Shortcode     string `json:"shortcode"`
+			PublicName    string `json:"public_name"`
+			MobileNetwork string `json:"mobile_network"`
+		} `json:"data"`
+	}
+
 	PayBody struct {
 		TransactionHash string `json:"transaction_hash"`
 		Amount          string `json:"amount"`
 		Shortcode       string `json:"shortcode"`
 		Type            string `json:"type"`
 		Chain           string `json:"chain"`
+	}
+
+	PayResponse struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			Status          string `json:"status"`
+			TransactionCode string `json:"transaction_code"`
+			Message         string `json:"message"`
+		} `json:"data"`
+	}
+	StatusResponse struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			ID              int     `json:"id"`
+			TransactionCode string  `json:"transaction_code"`
+			Status          string  `json:"status"`
+			Amount          string  `json:"amount"`
+			AmountInUSD     string  `json:"amount_in_usd"`
+			Type            string  `json:"type"`
+			Shortcode       string  `json:"shortcode"`
+			AccountNumber   *string `json:"account_number"`
+			PublicName      *string `json:"public_name"`
+			ReceiptNumber   *string `json:"receipt_number"`
+			Category        string  `json:"category"`
+			Chain           string  `json:"chain"`
+			Asset           string  `json:"asset"`
+			TransactionHash *string `json:"transaction_hash"`
+			Message         string  `json:"message"`
+			CurrencyCode    string  `json:"currency_code"`
+			IsReleased      bool    `json:"is_released"`
+			CreatedAt       string  `json:"created_at"`
+		} `json:"data"`
 	}
 
 	StatusBody struct {
@@ -55,8 +100,8 @@ func (fc *PretiumClient) ExchangeRate(ctx context.Context, input ExchangeRateBod
 	return exchangeRateResp, nil
 }
 
-func (fc *PretiumClient) Validation(ctx context.Context, input ValidationBody) (ExchangeRateResponse, error) {
-	validationResp := ExchangeRateResponse{}
+func (fc *PretiumClient) Validation(ctx context.Context, input ValidationBody) (ValidationResponse, error) {
+	validationResp := ValidationResponse{}
 
 	b, err := json.Marshal(&input)
 	if err != nil {
@@ -75,8 +120,8 @@ func (fc *PretiumClient) Validation(ctx context.Context, input ValidationBody) (
 	return validationResp, nil
 }
 
-func (fc *PretiumClient) Pay(ctx context.Context, input PayBody) (ExchangeRateResponse, error) {
-	payResp := ExchangeRateResponse{}
+func (fc *PretiumClient) Pay(ctx context.Context, input PayBody) (PayResponse, error) {
+	payResp := PayResponse{}
 
 	b, err := json.Marshal(&input)
 	if err != nil {
@@ -95,8 +140,8 @@ func (fc *PretiumClient) Pay(ctx context.Context, input PayBody) (ExchangeRateRe
 	return payResp, nil
 }
 
-func (fc *PretiumClient) Status(ctx context.Context, input StatusBody) (ExchangeRateResponse, error) {
-	statusResp := ExchangeRateResponse{}
+func (fc *PretiumClient) Status(ctx context.Context, input StatusBody) (StatusResponse, error) {
+	statusResp := StatusResponse{}
 
 	b, err := json.Marshal(&input)
 	if err != nil {
