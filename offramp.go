@@ -17,8 +17,8 @@ type (
 		Code    int    `json:"code"`
 		Message string `json:"message"`
 		Data    struct {
-			BuyingRate  string `json:"buying_rate"`
-			SellingRate string `json:"selling_rate"`
+			BuyingRate  float64 `json:"buying_rate"`
+			SellingRate float64 `json:"selling_rate"`
 		} `json:"data"`
 	}
 
