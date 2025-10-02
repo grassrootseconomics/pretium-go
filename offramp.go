@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
@@ -77,6 +78,12 @@ type (
 
 	StatusBody struct {
 		TransactionCode string `json:"transaction_code"`
+	}
+
+	WebhookPayload struct {
+		Status          string `json:"status"`
+		TransactionCode string `json:"transaction_code"`
+		Message         string `json:"message"`
 	}
 )
 
@@ -158,4 +165,12 @@ func (fc *PretiumClient) Status(ctx context.Context, input StatusBody) (StatusRe
 	}
 
 	return statusResp, nil
+}
+
+func ParseWebhook(r io.Reader) (WebhookPayload, error) {
+	var webhook WebhookPayload
+	if err := json.NewDecoder(r).Decode(&webhook); err != nil {
+		return webhook, err
+	}
+	return webhook, nil
 }
