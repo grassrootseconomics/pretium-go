@@ -43,6 +43,7 @@ type (
 		TransactionHash string `json:"transaction_hash"`
 		Amount          string `json:"amount"`
 		Shortcode       string `json:"shortcode"`
+		MobileNetwork   string `json:"mobile_network"`
 		Type            string `json:"type"`
 		Chain           string `json:"chain"`
 	}
