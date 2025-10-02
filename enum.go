@@ -12,4 +12,6 @@ const (
 	PAYBILL   = "PAYBILL"
 	BUY_GOODS = "BUY_GOODS"
 	MOBILE    = "MOBILE"
+
+	KES = "KES"
 )
