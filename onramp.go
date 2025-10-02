@@ -7,24 +7,26 @@ import (
 	"net/http"
 )
 
-type OnrampBody struct {
-	Shortcode     string  `json:"shortcode"`
-	Amount        float64 `json:"amount"`
-	MobileNetwork string  `json:"mobile_network,omitempty"`
-	Chain         string  `json:"chain"`
-	Asset         string  `json:"asset"`
-	Address       string  `json:"address"`
-}
+type (
+	OnrampBody struct {
+		Shortcode     string  `json:"shortcode"`
+		Amount        float64 `json:"amount"`
+		MobileNetwork string  `json:"mobile_network,omitempty"`
+		Chain         string  `json:"chain"`
+		Asset         string  `json:"asset"`
+		Address       string  `json:"address"`
+	}
 
-type OnrampResponse struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    struct {
-		TransactionCode string `json:"transaction_code"`
-		Status          string `json:"status"`
-		Message         string `json:"message"`
-	} `json:"data"`
-}
+	OnrampResponse struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			TransactionCode string `json:"transaction_code"`
+			Status          string `json:"status"`
+			Message         string `json:"message"`
+		} `json:"data"`
+	}
+)
 
 func (fc *PretiumClient) Onramp(ctx context.Context, currencyCode string, input OnrampBody) (OnrampResponse, error) {
 	onrampResp := OnrampResponse{}
