@@ -14,7 +14,12 @@ type (
 	}
 
 	ExchangeRateResponse struct {
-		Success bool `json:"success"`
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			BuyingRate  string `json:"buying_rate"`
+			SellingRate string `json:"selling_rate"`
+		} `json:"data"`
 	}
 
 	ValidationBody struct {
