@@ -12,6 +12,7 @@ import (
 type PretiumClient struct {
 	settlementAddress string
 	apiKey            string
+	callbackURL       string
 	httpClient        *http.Client
 }
 
@@ -24,10 +25,11 @@ const (
 )
 
 // New returns an instance of a Pretium client reusable across different products
-func New(settlementAddress string, apiKey string) *PretiumClient {
+func New(settlementAddress string, apiKey string, callbackURL string) *PretiumClient {
 	PretiumClient := &PretiumClient{
 		settlementAddress: settlementAddress,
 		apiKey:            apiKey,
+		callbackURL:       callbackURL,
 		httpClient: &http.Client{
 			Timeout: time.Second * 10,
 		},

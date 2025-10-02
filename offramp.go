@@ -130,7 +130,15 @@ func (fc *PretiumClient) Validation(ctx context.Context, input ValidationBody) (
 func (fc *PretiumClient) Pay(ctx context.Context, input PayBody) (PayResponse, error) {
 	payResp := PayResponse{}
 
-	b, err := json.Marshal(&input)
+	payload := struct {
+		PayBody
+		CallbackURL string `json:"callback_url"`
+	}{
+		PayBody:     input,
+		CallbackURL: fc.callbackURL,
+	}
+
+	b, err := json.Marshal(&payload)
 	if err != nil {
 		return payResp, err
 	}

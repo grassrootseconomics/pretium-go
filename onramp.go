@@ -11,7 +11,7 @@ type (
 	OnrampBody struct {
 		Shortcode     string  `json:"shortcode"`
 		Amount        float64 `json:"amount"`
-		MobileNetwork string  `json:"mobile_network,omitempty"`
+		MobileNetwork string  `json:"mobile_network"`
 		Chain         string  `json:"chain"`
 		Asset         string  `json:"asset"`
 		Address       string  `json:"address"`
@@ -31,7 +31,15 @@ type (
 func (fc *PretiumClient) Onramp(ctx context.Context, currencyCode string, input OnrampBody) (OnrampResponse, error) {
 	onrampResp := OnrampResponse{}
 
-	b, err := json.Marshal(&input)
+	payload := struct {
+		OnrampBody
+		CallbackURL string `json:"callback_url"`
+	}{
+		OnrampBody:  input,
+		CallbackURL: fc.callbackURL,
+	}
+
+	b, err := json.Marshal(&payload)
 	if err != nil {
 		return onrampResp, err
 	}
