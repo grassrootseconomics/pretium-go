@@ -1,9 +1,6 @@
 package pretium
 
 import (
-	"bytes"
-	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -90,24 +87,5 @@ func TestParseWebhook_Malformed(t *testing.T) {
 	_, err := ParseWebhook(strings.NewReader("{not json"))
 	if err == nil {
 		t.Fatal("expected error for malformed JSON, got nil")
-	}
-}
-
-func TestParseWebhookRequest(t *testing.T) {
-	body := `{"status":"PENDING","transaction_code":"tc-123","message":"queued"}`
-	req := httptest.NewRequest(http.MethodPost, "/webhook", bytes.NewBufferString(body))
-
-	got, err := ParseWebhookRequest(req)
-	if err != nil {
-		t.Fatalf("ParseWebhookRequest returned error: %v", err)
-	}
-	if got.Status != StatusPending {
-		t.Errorf("Status = %q, want %q", got.Status, StatusPending)
-	}
-	if got.TransactionCode != "tc-123" {
-		t.Errorf("TransactionCode = %q, want tc-123", got.TransactionCode)
-	}
-	if got.Event() != WebhookEventStatus {
-		t.Errorf("Event() = %q, want %q", got.Event(), WebhookEventStatus)
 	}
 }

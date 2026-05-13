@@ -214,10 +214,3 @@ func ParseWebhook(r io.Reader) (WebhookPayload, error) {
 	}
 	return webhook, nil
 }
-
-// ParseWebhookRequest decodes a Pretium webhook from an *http.Request body.
-// The caller remains responsible for closing the request body (the standard
-// library does this automatically once the handler returns).
-func ParseWebhookRequest(req *http.Request) (WebhookPayload, error) {
-	return ParseWebhook(req.Body)
-}

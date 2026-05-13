@@ -35,7 +35,7 @@ exposes the union of all fields; use `Event()` to discriminate.
 
 ```go
 http.HandleFunc("/pretium/webhook", func(w http.ResponseWriter, r *http.Request) {
-    payload, err := pretium.ParseWebhookRequest(r)
+    payload, err := pretium.ParseWebhook(r.Body)
     if err != nil {
         http.Error(w, "bad payload", http.StatusBadRequest)
         return
