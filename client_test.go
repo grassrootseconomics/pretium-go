@@ -192,7 +192,7 @@ func TestClient_FallsBackToStatusCodeWhenAPIErrorCodeIsZero(t *testing.T) {
 	}
 }
 
-func TestClient_NonJSONErrorSurfacesStatus(t *testing.T) {
+func TestClient_NonJSONErrorBodyIsSurfaced(t *testing.T) {
 	client, ts := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("upstream offline"))
@@ -206,8 +206,22 @@ func TestClient_NonJSONErrorSurfacesStatus(t *testing.T) {
 	if !strings.Contains(err.Error(), "500") {
 		t.Errorf("err = %q, want it to include the HTTP status", err.Error())
 	}
-	// NB: parseResponse consumes the body via json.Decode before falling back
-	// to io.ReadAll, so the upstream body text is currently lost for non-JSON
-	// error responses. Asserting only the status keeps this test stable if
-	// that bug gets fixed.
+	if !strings.Contains(err.Error(), "upstream offline") {
+		t.Errorf("err = %q, want it to include the upstream body", err.Error())
+	}
+}
+
+func TestClient_EmptyErrorBodyFallsBackToStatusOnly(t *testing.T) {
+	client, ts := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadGateway)
+	})
+	defer ts.Close()
+
+	_, err := client.ExchangeRate(context.Background(), ExchangeRateBody{CurrencyCode: KES})
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "502") {
+		t.Errorf("err = %q, want it to include the HTTP status", err.Error())
+	}
 }
