@@ -14,4 +14,8 @@ const (
 	MOBILE    = "MOBILE"
 
 	KES = "KES"
+
+	// Transaction status values returned by Pay, Onramp, Status and webhook payloads.
+	StatusPending  = "PENDING"
+	StatusComplete = "COMPLETE"
 )
