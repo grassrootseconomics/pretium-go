@@ -84,7 +84,8 @@ func parseResponse(resp *http.Response, target interface{}) error {
 
 	if resp.StatusCode >= http.StatusBadRequest {
 		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err == nil && apiErr.Message != "" {
+		dec := json.NewDecoder(resp.Body)
+		if err := dec.Decode(&apiErr); err == nil && apiErr.Message != "" {
 			if apiErr.Code == 0 {
 				// Fallback to HTTP status code when API didn't set it.
 				apiErr.Code = resp.StatusCode
