@@ -93,11 +93,7 @@ func parseResponse(resp *http.Response, target interface{}) error {
 			return &apiErr
 		}
 
-		b, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("Pretium server error: status=%s", resp.Status)
-		}
-		return fmt.Errorf("Pretium server error: status=%s body=%s", resp.Status, string(b))
+		return fmt.Errorf("Pretium server error: status=%s", resp.Status)
 	}
 
 	return json.NewDecoder(resp.Body).Decode(target)

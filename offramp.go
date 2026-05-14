@@ -87,11 +87,37 @@ type (
 	}
 
 	WebhookPayload struct {
-		Status          string `json:"status"`
-		TransactionCode string `json:"transaction_code"`
-		Message         string `json:"message"`
+		Status          string  `json:"status,omitempty"`
+		TransactionCode string  `json:"transaction_code"`
+		Message         string  `json:"message,omitempty"`
+		ReceiptNumber   *string `json:"receipt_number,omitempty"`
+		PublicName      *string `json:"public_name,omitempty"`
+		IsReleased      *bool   `json:"is_released,omitempty"`
+		TransactionHash *string `json:"transaction_hash,omitempty"`
 	}
+
+	WebhookEvent string
 )
+
+const (
+	// WebhookEventAssetReleased signals that the onramp asset has been released to
+	// the user's wallet. Payload exposes IsReleased and TransactionHash.
+	WebhookEventAssetReleased WebhookEvent = "onramp_asset_released"
+
+	// WebhookEventStatus covers both offramp payout completion and onramp payment
+	// confirmation; the two share an identical body shape so the SDK cannot
+	// distinguish them from the payload alone.
+	WebhookEventStatus WebhookEvent = "status"
+)
+
+// Event classifies which of the documented Pretium webhook variants this
+// payload represents.
+func (w WebhookPayload) Event() WebhookEvent {
+	if w.IsReleased != nil {
+		return WebhookEventAssetReleased
+	}
+	return WebhookEventStatus
+}
 
 func (fc *PretiumClient) ExchangeRate(ctx context.Context, input ExchangeRateBody) (ExchangeRateResponse, error) {
 	exchangeRateResp := ExchangeRateResponse{}
